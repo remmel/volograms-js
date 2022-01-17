@@ -1,0 +1,34 @@
+{
+  "name": "volograms.js",
+  "version": "1.0.0",
+  "description": "Volograms JS Reader",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack --config webpack.config.js",
+    "start": "webpack-dev-server --mode development",
+    "format": "prettier --write '**/*.js'",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist --no-history"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/remmel/volograms.js.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/remmel/volograms.js/issues"
+  },
+  "homepage": "https://github.com/remmel/volograms.js#readme",
+  "devDependencies": {
+    "gh-pages": "^3.2.3",
+    "webpack": "^5.66.0",
+    "webpack-cli": "^4.9.1",
+    "webpack-dev-server": "^4.7.3"
+  },
+  "dependencies": {
+    "three": "^0.136.0"
+  }
+}
