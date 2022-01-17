@@ -1,6 +1,6 @@
 {
   "name": "volograms.js",
-  "version": "1.0.0",
+  "version": "0.1.0",
   "description": "Volograms JS Reader",
   "main": "index.js",
   "scripts": {
