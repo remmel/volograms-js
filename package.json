@@ -1,8 +1,8 @@
 {
   "name": "volograms-js",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Volograms JS Reader",
-  "main": "index.js",
+  "main": "src/Vologram.js",
   "scripts": {
     "build": "webpack --config webpack.config.js",
     "start": "webpack-dev-server --mode development",

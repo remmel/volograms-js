@@ -9,7 +9,7 @@ Volograms JS Reader for Threejs
 
 ## Use the lib
 ```javascript
-import { Vologram } from 'volograms-js/src/Vologram'
+import { Vologram } from 'volograms-js'
 let vologram = new Vologram(url, p => console.log("loading...", p))
 scene.add(vologram)
 
