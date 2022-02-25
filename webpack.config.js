@@ -6,7 +6,7 @@ module.exports = {
     'demo': './src/demo.js',
   },
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: path.resolve(__dirname, 'examples'),
     filename: 'build/bundle.[name].js',
   },
   performance: {
@@ -14,7 +14,7 @@ module.exports = {
     maxAssetSize: 1024000,
   },
   devServer: {
-    static: './dist',
+    static: './examples',
     compress: true,
     https: true,
     port: 9000,
@@ -30,5 +30,6 @@ module.exports = {
         use: ['style-loader', 'css-loader']
       }
     ]
-  }
+  },
+  // externals: { three: 'THREE'}
 }
