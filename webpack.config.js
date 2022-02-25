@@ -6,7 +6,7 @@ module.exports = {
     'demo': './src/demo.js',
   },
   output: {
-    path: path.resolve(__dirname, 'examples'),
+    path: path.resolve(__dirname, 'dist'),
     filename: 'build/bundle.[name].js',
   },
   performance: {
@@ -14,7 +14,7 @@ module.exports = {
     maxAssetSize: 1024000,
   },
   devServer: {
-    static: './examples',
+    static: './dist',
     compress: true,
     https: true,
     port: 9000,
