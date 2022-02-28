@@ -1,6 +1,6 @@
 import {createElement} from "../utils";
 
-test('adds 1 + 2 to equal 3', () => {
+test('createElement video', () => {
     let elVideo = createElement("<video muted='muted' loop='loop'/>")
     // expect(sum(1, 2)).toBe(3)
     expect(elVideo).not.toBeNull()

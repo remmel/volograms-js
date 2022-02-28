@@ -8,10 +8,10 @@
     "url": "git+https://github.com/remmel/volograms-js.git"
   },
   "scripts": {
-    "build": "webpack --config webpack.config.js",
+    "build": "webpack --config webpack.config.cjs",
     "start": "webpack-dev-server --mode development",
     "format": "prettier --write '**/*.js'",
-    "test": "node --experimental-vm-modules node_modules/jest/bin/jest --env=jsdom",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist --no-history"
   },
