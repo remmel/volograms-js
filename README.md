@@ -3,7 +3,7 @@
 Play in a browser volumetric videos produced by Volograms App.
 
 - [demo npm](https://remmel.github.io/volograms-js) / [demo npm src](https://github.com/remmel/volograms-js/blob/main/src/demo.js)
-- [demo jsm](https://remmel.github.io/volograms-js/index-jsm.html) / [demo jsm src](https://github.com/remmel/volograms-js/blob/main/examples/index-jsm.html)
+- [demo jsm](https://remmel.github.io/volograms-js/index-jsm.html) / [demo jsm src](https://github.com/remmel/volograms-js/blob/main/dist/index-jsm.html)
 - [npm package](https://www.npmjs.com/package/volograms-js)
 
 ## Install from npm
@@ -53,7 +53,7 @@ If `WARNING: Multiple instances of Three.js being imported.` See https://discour
 ### Note for myself
 
 #### Demo build
-That package doesn't have any build to be imported by external project (we rely on skypack).  
-That package could be published without the webpack build, examples folder and demo.js file.  
+That lib doesn't have any build to be imported by external app (we rely on skypack).  
+That lib could be published without the webpack build, examples folder and demo.js file.  
 Thoses files are only here for testing and example purpose.  
-I should split the reusable code to be imported with the demo code. And provide the built file which can be imported (using rollup?).   
+I should split the reusable code to be imported with the demo code. And provide the built file which can be imported (using rollup? `Use webpack for apps, and Rollup for libraries`).   
