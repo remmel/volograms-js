@@ -11,7 +11,7 @@
     "build": "webpack --config webpack.config.js",
     "start": "webpack-dev-server --mode development",
     "format": "prettier --write '**/*.js'",
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "node --experimental-vm-modules node_modules/jest/bin/jest --env=jsdom",
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist --no-history"
   },
@@ -27,8 +27,10 @@
   },
   "devDependencies": {
     "gh-pages": "^3.2.3",
+    "jest": "^27.5.1",
     "webpack": "^5.66.0",
     "webpack-cli": "^4.9.1",
     "webpack-dev-server": "^4.7.3"
-  }
+  },
+  "type": "module"
 }

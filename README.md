@@ -1,4 +1,7 @@
 # volograms-js
+
+[![Node.js CI](https://github.com/remmel/volograms-js/actions/workflows/node.js.yml/badge.svg)](https://github.com/remmel/volograms-js/actions/workflows/node.js.yml)
+
 [Volograms](https://www.volograms.com/) js reader for [three.js](https://threejs.org/).  
 Play in a browser volumetric videos produced by Volograms App.
 
