@@ -1,6 +1,6 @@
 {
   "name": "volograms-js",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "Volograms JS Reader",
   "main": "src/Vologram.js",
   "repository": {
@@ -23,7 +23,7 @@
   },
   "homepage": "https://github.com/remmel/volograms-js#readme",
   "peerDependencies": {
-    "three": "^0.137.0"
+    "three": "^0.129.0"
   },
   "devDependencies": {
     "gh-pages": "^3.2.3",
