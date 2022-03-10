@@ -1,5 +1,5 @@
-import {BinaryReader} from "./BinaryReader"
-import {fetchOnProgress} from "./utils"
+import {BinaryReader} from "./BinaryReader.js"
+import {fetchOnProgress} from "./utils.js"
 
 export class VologramBodyReader {
 

@@ -15,7 +15,7 @@
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist --no-history"
   },
-  "keywords": [],
+  "keywords": ["vologram", "hologram", "volumetric", "rgbd", "lidar", "tof", "video", "6dof"],
   "author": "",
   "license": "ISC",
   "bugs": {

@@ -1,7 +1,7 @@
 import * as THREE from 'three'
-import {VologramHeaderReader} from './VologramHeaderReader'
-import {VologramBodyReader} from './VologramBodyReader'
-import {createElement} from "./utils"
+import {createElement} from "./utils.js";
+import {VologramHeaderReader} from "./VologramHeaderReader.js";
+import {VologramBodyReader} from "./VologramBodyReader.js";
 
 //VologramFrame.cs AND VologramAssetLoader.cs
 export class Vologram extends THREE.Group {

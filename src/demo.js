@@ -1,6 +1,6 @@
 import * as THREE from 'three'
-import {OrbitControls} from "three/examples/jsm/controls/OrbitControls"
-import {Vologram} from "./Vologram"
+import {OrbitControls} from "three/examples/jsm/controls/OrbitControls.js"
+import {Vologram} from "./Vologram.js"
 
 // setup render, scene, light, orbitcontrol
 const renderer = new THREE.WebGLRenderer()
