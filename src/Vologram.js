@@ -6,13 +6,15 @@ import {createElement} from "./utils"
 //VologramFrame.cs AND VologramAssetLoader.cs
 export class Vologram extends THREE.Group {
 
-    constructor(folder, onProgress = () => {}) {
+    constructor(folder, onProgress = () => {}, options = {texture: 'texture_2048_h264.mp4'}) {
         super()
         this.onProgress = onProgress
 
         this.elVideo = createElement(`<video width='400' height='80' muted controls loop playsinline preload='auto' crossorigin='anonymous'>`)
         this.geometries = []
         this.fps = 30
+
+        this.options = options
 
         //this.elVideo.ontimeupdate = e => this.update(e)
 
@@ -22,7 +24,7 @@ export class Vologram extends THREE.Group {
 
     async init(folder) {
         this.geometries = await this.fetchMeshes(folder)
-        this.elVideo.src = folder + '/texture_1024_h264.mp4'
+        this.elVideo.src = folder + '/' + this.options.texture
         // this.elVideo.playbackRate = 0.1
         var texture = this.texture = new THREE.VideoTexture(this.elVideo)
         texture.minFilter = THREE.NearestFilter

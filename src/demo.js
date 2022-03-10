@@ -26,7 +26,7 @@ const updateLoading = p => {
     el.innerText = Math.round(p*100) + '%'
 }
 
-let url = 'https://www.kustgame.com/ftp/vv/volograms/Rafa_Approves_sd'
+let url = 'https://www.kustgame.com/ftp/vv/volograms/remy_ld'
 let vologram = new Vologram(url, updateLoading)
 scene.add(vologram)
 
