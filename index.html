@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Volograms-js demo - with build</title>
+    <style>
+        body { margin: 0; }
+        #gui{
+            position: absolute;
+            color: white;
+            text-align: center;
+            width: 100%;
+            user-select: none;
+        }
+    </style>
+</head>
+<body>
+<span id="gui">Loading...</span>
+<!-- if we decide to exclude three from demo build using `externals: { three: 'THREE'}` in `webpack.config.js`, it have to be added like following -->
+<!--<script src="https://cdn.jsdelivr.net/npm/three@0.136.0/build/three.js"></script>-->
+<script src="build/bundle.demo.js"></script>
+</body>
+</html>
