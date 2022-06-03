@@ -47,7 +47,7 @@ No volograms.module.js is generated. It will directly use the js es6 code. See `
 <script type="module">
     import * as THREE from 'three'
     import {OrbitControls} from 'https://cdn.jsdelivr.net/npm/three@0.136.0/examples/jsm/controls/OrbitControls.js'
-    import {Vologram} from 'https://rawcdn.githack.com/remmel/volograms-js/580bb277cfab42dc6f8ec577fd4ee826f4ffc4d6/src/Vologram.js'
+    import {Vologram} from 'https://cdn.jsdelivr.net/npm/volograms-js@0.1.12/src/Vologram.js'
 
     // code
 </script>

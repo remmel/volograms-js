@@ -1,6 +1,6 @@
 {
   "name": "volograms-js",
-  "version": "0.1.11",
+  "version": "0.1.12",
   "description": "Volograms JS Reader",
   "main": "src/Vologram.js",
   "repository": {
@@ -25,7 +25,7 @@
     "video",
     "6dof"
   ],
-  "author": "",
+  "author": "Remy Mellet",
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/remmel/volograms-js/issues"

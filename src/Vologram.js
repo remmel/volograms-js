@@ -6,21 +6,20 @@ import {VologramBodyReader} from "./VologramBodyReader.js";
 //VologramFrame.cs AND VologramAssetLoader.cs
 export class Vologram extends THREE.Group {
 
-    constructor(folder, onProgress = () => {}, options = {texture: 'texture_2048_h264.mp4'}) {
+    constructor(folder, onProgress = () => {}, options = {}) {
         super()
         this.onProgress = onProgress
+        this.options = {texture: 'texture_2048_h264.mp4', autoplay: true, ...options}
 
         this.elVideo = createElement(`<video width='400' height='80' muted controls loop playsinline preload='auto' crossorigin='anonymous'>`)
         this.geometries = []
         this.fps = 30
 
-        this.options = options
-
-        // elVideo.ontimeupdate is not trigged often enought
+        // elVideo.ontimeupdate is not triggered often enough
         this.elVideo.requestVideoFrameCallback(this.onVideoFrameCallback.bind(this))
 
         this.init(folder)
-        window.V = this
+        window.VOLOG = this //dirty yeah, but for debugging only
     }
 
     async init(folder) {
@@ -29,7 +28,9 @@ export class Vologram extends THREE.Group {
         // this.elVideo.playbackRate = 0.1
         var texture = this.texture = new THREE.VideoTexture(this.elVideo)
         texture.minFilter = THREE.NearestFilter
-        this.elVideo.play()
+
+        if(this.options.autoplay)
+            this.elVideo.play()
 
         this.material = new THREE.MeshPhongMaterial({
             side: THREE.DoubleSide,
