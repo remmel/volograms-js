@@ -32,7 +32,6 @@ scene.add(vologram)
 
 function animate() {
     requestAnimationFrame(animate)
-    vologram.update() //to animate the vologram
     renderer.render(scene, camera)
 }
 

@@ -1,6 +1,6 @@
 {
   "name": "volograms-js",
-  "version": "0.1.10",
+  "version": "0.1.11",
   "description": "Volograms JS Reader",
   "main": "src/Vologram.js",
   "repository": {
@@ -15,7 +15,16 @@
     "predeploy": "npm run build",
     "deploy": "gh-pages -d dist --no-history"
   },
-  "keywords": ["vologram", "hologram", "volumetric", "rgbd", "lidar", "tof", "video", "6dof"],
+  "keywords": [
+    "vologram",
+    "hologram",
+    "volumetric",
+    "rgbd",
+    "lidar",
+    "tof",
+    "video",
+    "6dof"
+  ],
   "author": "",
   "license": "ISC",
   "bugs": {
@@ -30,7 +39,8 @@
     "jest": "^27.5.1",
     "webpack": "^5.66.0",
     "webpack-cli": "^4.9.1",
-    "webpack-dev-server": "^4.7.3"
+    "webpack-dev-server": "^4.7.3",
+    "three": "^0.129.0"
   },
   "type": "module"
 }

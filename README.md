@@ -26,10 +26,6 @@ import {Vologram} from 'volograms-js'
 let vologram = new Vologram(url, p => console.log("loading...", p))
 scene.add(vologram)
 
-function animate() {
-    ///...
-    vologram.update() //to animate the vologram
-}
 ```
 
 ## Install from CDN or static hosting - es module
@@ -64,12 +60,28 @@ Need to try https://bundle.run/ or https://wzrd.in/ or https://unpkg.com/
 
 ### Troubleshooting
 
+#### Unsynced texture with geometry
+If the volumetric video blink (texture not always synced with geometry) please send me the data files and information about your system (OS + Browser).
+Some explanation: as the frame is not encoded in the texture, we have to guess/calculated it.
+This is possible as the video have constant framerate (1/30) however I figured out that some started at 0 and other at 0.02322.
+And this is possible than for other it could also be different.
+
+#### Multiple Three.js
 If `WARNING: Multiple instances of Three.js being imported.` See https://discourse.threejs.org/t/35292
 
-### Note for myself
+### Note to older myself
 
 #### Demo build
 That lib doesn't have any build to be imported by external app. We rely on skypack or cdn to access e6 modules.  
 That lib could be published without the webpack build, examples folder and demo.js file.  
 Thoses files are only here for testing and example purpose.  
 I should split the reusable code to be imported with the demo code. And provide the built file which can be imported (using rollup? `Use webpack for apps, and Rollup for libraries`).   
+
+#### Improve that lib
+```shell
+git clone https://github.com/remmel/volograms-js.git
+cd volograms-js
+npm install
+npm run start
+# open https://localhost:9000/
+```

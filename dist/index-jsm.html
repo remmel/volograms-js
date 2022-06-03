@@ -30,7 +30,7 @@
 <script type="module">
     import * as THREE from 'three'
     import {OrbitControls} from 'https://cdn.jsdelivr.net/npm/three@0.136.0/examples/jsm/controls/OrbitControls.js'
-    import {Vologram} from 'https://rawcdn.githack.com/remmel/volograms-js/580bb277cfab42dc6f8ec577fd4ee826f4ffc4d6/src/Vologram.js'
+    import {Vologram} from 'https://rawcdn.githack.com/remmel/volograms-js/main/src/Vologram.js'
 
     // Skypack can also be used instead of all code above, but
     // three version in https://cdn.skypack.dev/three must match three version in https://cdn.skypack.dev/volograms-js
@@ -68,7 +68,6 @@
 
     function animate() {
         requestAnimationFrame(animate)
-        vologram.update() //to animate the vologram
         renderer.render(scene, camera)
     }
 
