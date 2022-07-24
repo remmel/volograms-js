@@ -57,6 +57,18 @@ No volograms.module.js is generated. It will directly use the js es6 code. See `
 This is not possible as no build is generated. I'm not really of fan of committing compiled code in github.
 Need to try https://bundle.run/ or https://wzrd.in/ or https://unpkg.com/
 
+## Options
+
+- `texture` : The video texture is expected to be named `texture_2048_h264.mp4`, otherwise if it is named for example `texture_1024_h264.mp4` do `new Vologram(url, () => {}, {texture: 'texture_1024_h264.mp4'})`
+- `autoplay` : By default, this is true, but if you don't want to play when loaded: `new Vologram(url, () => {}, {autoplay: false})` 
+
+## Sound & Play/Pause
+
+This lib uses and exposes the standard [`HTMLVideoElement`](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement);  most common methods are:
+- [pause](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/pause): `vologram.elVideo.pause()`
+- [play](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/play): `vologram.elVideo.play()`
+- [unmute](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/muted): `vologram.elVideo.muted = false`. Remember that usually playing and unmuted video, needs an user interaction (to avoid annoying him with unwanted sound / advertising)
+- [seek](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/currentTime): `vologram.elVideo.currentTime = 1.5`. In seconds
 
 ### Troubleshooting
 
