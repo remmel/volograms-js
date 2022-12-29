@@ -22,15 +22,15 @@
 <script type="importmap">
         {
             "imports": {
-                "three": "https://cdn.jsdelivr.net/npm/three@0.136.0/build/three.module.js"
+                "three": "https://cdn.jsdelivr.net/npm/three@0.148.0/build/three.module.js"
             }
         }
 </script>
 
 <script type="module">
     import * as THREE from 'three'
-    import {OrbitControls} from 'https://cdn.jsdelivr.net/npm/three@0.137.0/examples/jsm/controls/OrbitControls.js'
-    import {Vologram} from 'https://cdn.jsdelivr.net/npm/volograms-js@0.1.12/src/Vologram.js'
+    import {OrbitControls} from 'https://cdn.jsdelivr.net/npm/three@0.148.0/examples/jsm/controls/OrbitControls.js'
+    import {Vologram} from 'https://cdn.jsdelivr.net/npm/volograms-js@0.1.16/src/Vologram.js'
 
     // if package not yet published on npm :
     // import {Vologram} from 'https://rawcdn.githack.com/remmel/volograms-js/9e3267899a5172d5af0a66ab06b575da06ea4ec7/src/Vologram.js'
@@ -69,7 +69,7 @@
     document.getElementById('sound').onclick = e => vologram.elVideo.muted = !vologram.elVideo.muted
 
     let url = 'https://www.metalograms.com/ftp/vv/volograms/1670754904327_ld'
-    let vologram = new Vologram(url, updateLoading, {texture: 'texture_1024_h264.mp4' })
+    let vologram = new Vologram(url, updateLoading)
     scene.add(vologram)
 
     function animate() {
