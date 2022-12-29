@@ -15,7 +15,11 @@
     </style>
 </head>
 <body>
-<span id="gui">Loading...</span>
+<span id="gui">
+    <span id="loading">...</span>
+    <button id="playpause">⏯︎</button>
+    <button id="sound">🔈</button>
+</span>
 <!-- if we decide to exclude three from demo build using `externals: { three: 'THREE'}` in `webpack.config.js`, it have to be added like following -->
 <!--<script src="https://cdn.jsdelivr.net/npm/three@0.136.0/build/three.js"></script>-->
 <script src="build/bundle.demo.js"></script>

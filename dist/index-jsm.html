@@ -29,7 +29,7 @@
 
 <script type="module">
     import * as THREE from 'three'
-    import {OrbitControls} from 'https://cdn.jsdelivr.net/npm/three@0.136.0/examples/jsm/controls/OrbitControls.js'
+    import {OrbitControls} from 'https://cdn.jsdelivr.net/npm/three@0.137.0/examples/jsm/controls/OrbitControls.js'
     import {Vologram} from 'https://cdn.jsdelivr.net/npm/volograms-js@0.1.12/src/Vologram.js'
 
     // if package not yet published on npm :
@@ -61,12 +61,15 @@
 
     // as a volograms takes time to be downloaded, display loading information
     const updateLoading = p => {
-        const el = document.getElementById('gui')
+        const el = document.getElementById('loading')
         el.innerText = Math.round(p*100) + '%'
     }
 
-    let url = 'https://www.kustgame.com/ftp/vv/volograms/remy_ld'
-    let vologram = new Vologram(url, updateLoading)
+    document.getElementById('playpause').onclick = e => vologram.elVideo.paused ? vologram.elVideo.play() : vologram.elVideo.pause()
+    document.getElementById('sound').onclick = e => vologram.elVideo.muted = !vologram.elVideo.muted
+
+    let url = 'https://www.metalograms.com/ftp/vv/volograms/1670754904327_ld'
+    let vologram = new Vologram(url, updateLoading, {texture: 'texture_1024_h264.mp4' })
     scene.add(vologram)
 
     function animate() {
@@ -78,7 +81,11 @@
 
 </script>
 
-<span id="gui">Loading...</span>
+<span id="gui">
+    <span id="loading">...</span>
+    <button id="playpause">⏯︎</button>
+    <button id="sound">🔈</button>
+</span>
 
 </body>
 </html>

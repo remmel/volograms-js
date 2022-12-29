@@ -22,11 +22,14 @@ scene.add(new THREE.GridHelper(10, 10))
 
 // as a volograms takes time to be downloaded, display loading information
 const updateLoading = p => {
-    const el = document.getElementById('gui')
+    const el = document.getElementById('loading')
     el.innerText = Math.round(p*100) + '%'
 }
 
-let url = 'https://www.kustgame.com/ftp/vv/volograms/remy_ld'
+document.getElementById('playpause').onclick = e => vologram.elVideo.paused ? vologram.elVideo.play() : vologram.elVideo.pause()
+document.getElementById('sound').onclick = e => vologram.elVideo.muted = !vologram.elVideo.muted
+
+let url = 'https://www.metalograms.com/ftp/vv/volograms/1670754904327_ld'
 let vologram = new Vologram(url, updateLoading)
 scene.add(vologram)
 

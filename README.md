@@ -5,9 +5,11 @@
 [Volograms](https://www.volograms.com/) js reader for [three.js](https://threejs.org/).  
 Play in a browser volumetric videos produced by Volograms App.
 
-- [demo npm](https://remmel.github.io/volograms-js) / [demo npm src](https://github.com/remmel/volograms-js/blob/main/src/demo.js)
-- [demo jsm](https://remmel.github.io/volograms-js/index-jsm.html) / [demo jsm src](https://github.com/remmel/volograms-js/blob/main/dist/index-jsm.html)
-- [npm package](https://www.npmjs.com/package/volograms-js)
+Try it :
+- Easier and quicker way : [demo jsm](https://remmel.github.io/volograms-js/index-jsm.html) ([source](https://github.com/remmel/volograms-js/blob/main/dist/index-jsm.html))
+- or with npm : [demo npm](https://remmel.github.io/volograms-js) ([source](https://github.com/remmel/volograms-js/blob/main/src/demo.js))
+
+[npm package](https://www.npmjs.com/package/volograms-js)
 
 ## Install from npm
 
@@ -47,7 +49,7 @@ No volograms.module.js is generated. It will directly use the js es6 code. See `
 <script type="module">
     import * as THREE from 'three'
     import {OrbitControls} from 'https://cdn.jsdelivr.net/npm/three@0.136.0/examples/jsm/controls/OrbitControls.js'
-    import {Vologram} from 'https://cdn.jsdelivr.net/npm/volograms-js@0.1.12/src/Vologram.js'
+    import {Vologram} from 'https://cdn.jsdelivr.net/npm/volograms-js@0.1.13/src/Vologram.js'
 
     // code
 </script>
@@ -59,7 +61,7 @@ Need to try https://bundle.run/ or https://wzrd.in/ or https://unpkg.com/
 
 ## Options
 
-- `texture` : The video texture is expected to be named `texture_2048_h264.mp4`, otherwise if it is named for example `texture_1024_h264.mp4` do `new Vologram(url, () => {}, {texture: 'texture_1024_h264.mp4'})`
+- `texture` : The video texture is expected to be named `texture_1024_h264.mp4`, otherwise if it is named for example `texture_2048_h264.mp4` do `new Vologram(url, () => {}, {texture: 'texture_2048_h264.mp4'})`
 - `autoplay` : By default, this is true, but if you don't want to play when loaded: `new Vologram(url, () => {}, {autoplay: false})` 
 
 ## Sound & Play/Pause
@@ -80,6 +82,13 @@ And this is possible than for other it could also be different.
 
 #### Multiple Three.js
 If `WARNING: Multiple instances of Three.js being imported.` See https://discourse.threejs.org/t/35292
+
+#### Unsynced and low sound
+The volograms I recorded have a slight offset between the texture and the sound and a low sound.
+The problem is independent of my plugin and comes from the vologram generation.
+However, you can easily fix it with the use of `ffmpeg`:
+- To delay 0.5s the sound : `ffmpeg -i texture_1024_h264.mp4 -itsoffset 0.5 -i texture_1024_h264.mp4 -map 0:v -map 1:a -c copy texture_1024_h264_delayed.mp4`  
+- To increase   the sound : `ffmpeg -i texture_1024_h264.mp4 -filter:a "volume=3" -vcodec copy  texture_1024_h264_louder.mp4` (or use js `createGain()`).  
 
 ### Note to older myself
 

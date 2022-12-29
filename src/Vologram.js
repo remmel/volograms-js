@@ -9,7 +9,7 @@ export class Vologram extends THREE.Group {
     constructor(folder, onProgress = () => {}, options = {}) {
         super()
         this.onProgress = onProgress
-        this.options = {texture: 'texture_2048_h264.mp4', autoplay: true, ...options}
+        this.options = {texture: 'texture_1024_h264.mp4', autoplay: true, ...options}
 
         this.elVideo = createElement(`<video width='400' height='80' muted controls loop playsinline preload='auto' crossorigin='anonymous'>`)
         this.geometries = []
