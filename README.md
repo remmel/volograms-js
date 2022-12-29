@@ -41,15 +41,15 @@ No volograms.module.js is generated. It will directly use the js es6 code. See `
 <script type="importmap">
         {
             "imports": {
-                "three": "https://cdn.jsdelivr.net/npm/three@0.136.0/build/three.module.js"
+                "three": "https://cdn.jsdelivr.net/npm/three@0.148.0/build/three.module.js"
             }
         }
 </script>
 
 <script type="module">
     import * as THREE from 'three'
-    import {OrbitControls} from 'https://cdn.jsdelivr.net/npm/three@0.136.0/examples/jsm/controls/OrbitControls.js'
-    import {Vologram} from 'https://cdn.jsdelivr.net/npm/volograms-js@0.1.13/src/Vologram.js'
+    import {OrbitControls} from 'https://cdn.jsdelivr.net/npm/three@0.148.0/examples/jsm/controls/OrbitControls.js'
+    import {Vologram} from 'https://cdn.jsdelivr.net/npm/volograms-js@latest/src/Vologram.js' //replace latest with version eg 0.1.116 for production usage
 
     // code
 </script>
