@@ -105,4 +105,12 @@ cd volograms-js
 npm install
 npm run start
 # open https://localhost:9000/
+# open https://localhost:9000/index-jsm.html
 ```
+
+#### Use local checkout package in my project
+`npm i volograms-js@../volograms-js/`
+
+### Publish new version on npm
+`npm version 0.1.1`
+`npm publish`
