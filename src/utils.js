@@ -16,6 +16,5 @@ export function fetchOnProgress(url, onProgress, responseType = 'arraybuffer') {
         xhr.addEventListener('abort', () => reject(xhr))
         xhr.open('GET', url)
         xhr.send()
-        window.XHR = xhr
     })
 }

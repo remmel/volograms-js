@@ -17,7 +17,7 @@ module.exports = {
     static: './dist',
     compress: true,
     https: true,
-    port: 9000,
+    // port: 9000,
     hot: true,
     host: '0.0.0.0',
     // disableHostCheck: true,
