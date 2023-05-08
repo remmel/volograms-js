@@ -26,8 +26,16 @@ const updateLoading = p => {
     el.innerText = Math.round(p*100) + '%'
 }
 
+// Play/Pause button and Sound/Mute button
 document.getElementById('playpause').onclick = e => vologram.elVideo.paused ? vologram.elVideo.play() : vologram.elVideo.pause()
 document.getElementById('sound').onclick = e => vologram.elVideo.muted = !vologram.elVideo.muted
+
+// Play and unmute when clicking on canvas (because of Chrome policy; can be autoplay)
+renderer.domElement.onclick = e => {
+    vologram.elVideo.play()
+    vologram.elVideo.muted = false
+    renderer.domElement.onclick = null
+}
 
 let url = 'https://www.metalograms.com/ftp/vv/volograms/1670754904327_ld'
 let vologram = new Vologram(url, updateLoading)

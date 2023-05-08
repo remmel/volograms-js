@@ -1,9 +1,7 @@
-import { BufferAttribute } from "three";
 import * as THREE from 'three'
-import { read } from "three/addons/libs/ktx-parse.module.js";
-import {createElement} from "./utils.js";
-import {VologramHeaderReader} from "./VologramHeaderReader.js";
-import {VologramBodyReader} from "./VologramBodyReader.js";
+import {createElement} from './utils.js'
+import {VologramHeaderReader} from './VologramHeaderReader.js'
+import {VologramBodyReader} from './VologramBodyReader.js'
 
 //VologramFrame.cs AND VologramAssetLoader.cs
 export class Vologram extends THREE.Group {
@@ -11,7 +9,12 @@ export class Vologram extends THREE.Group {
     constructor(folder, onProgress = () => {}, options = {}) {
         super()
         this.onProgress = onProgress
-        this.options = {texture: 'texture_1024_h264.mp4', autoplay: true, ...options}
+        this.options = {
+            texture: 'texture_1024_h264.mp4',
+            header: 'header.vols',
+            sequence: 'sequence_0.vols',
+            ...options
+        }
 
         this.elVideo = createElement(`<video width='400' height='80' muted controls loop playsinline preload='auto' crossorigin='anonymous'>`)
         this.fps = 30
@@ -42,36 +45,25 @@ export class Vologram extends THREE.Group {
                 map: texture,
             })
 
-        const {header, body, reader} = this.readers = await this.fetchMeshes(folder)
+        this.bodyReader = await this.fetch(folder)
 
-        const geo = this.fetchMesh(0, header, body, reader)
+        const geo = this.readFrameGeo(0)
 
         this.mesh = new THREE.Mesh(geo, this.material)
 
         this.add(this.mesh)
     }
 
-    async fetchMeshes(folder) {
-        let header = await new VologramHeaderReader().init(folder + '/header.vols')
-        let body = new VologramBodyReader(folder + '/sequence_0.vols', header.version, this.onProgress)
-        let reader = await body.fetch()
-
-        for (let i = 0; i < header.frameCount; i++) {
-            body.customReadNext(reader, header.hasNormal(), header.isTextured(), false)
-        }
-
-        return {header, body, reader}
+    async fetch(folder) {
+        let header = await new VologramHeaderReader().init(folder + '/' + this.options.header)
+        let body = new VologramBodyReader(folder + '/' + this.options.sequence, header, this.onProgress)
+        await body.fetch()
+        return body
     }
 
-    fetchMesh(frameNum, header, body, reader) {
-
-        // body.customReadSeekFrame(reader, header.hasNormal(), header.isTextured(), frameNum)
-
-        const headerDirectory = body.framesDirectory[frameNum]
-        reader.cur = headerDirectory.cur
-        body.customReadNext(reader, header.hasNormal(), header.isTextured())
-        let geo = this.createGeometry(body)
-        return geo
+    readFrameGeo(frameNum) {
+        this.bodyReader.readSeekFrame(frameNum)
+        return this.createGeometry(this.bodyReader)
     }
 
     /**
@@ -84,8 +76,8 @@ export class Vologram extends THREE.Group {
     onVideoFrameCallback(now, metadata) {
         var frameIdx = this.getFrameIdx(metadata.mediaTime)
 
-        if (this.prevFrameIdx !== frameIdx && this.readers) {
-            const geo = this.fetchMesh(frameIdx, this.readers.header, this.readers.body, this.readers.reader)
+        if (this.prevFrameIdx !== frameIdx && this.bodyReader) {
+            const geo = this.readFrameGeo(frameIdx)
             this.mesh.geometry.dispose()
             this.mesh.geometry = geo
             this.prevFrameIdx = frameIdx
@@ -116,6 +108,7 @@ export class Vologram extends THREE.Group {
     createGeometry(body) {
         let geometry = new THREE.BufferGeometry()
         geometry.setIndex(new THREE.BufferAttribute(body.indicesData, 1))
+        console.log(body, body.verticesData.length)
         geometry.setAttribute('position', new THREE.BufferAttribute(body.verticesData, 3))
         geometry.setAttribute('normal', new THREE.BufferAttribute(body.normalsData, 3))
         geometry.setAttribute('uv', new THREE.BufferAttribute(body.uvsData, 2))

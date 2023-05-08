@@ -4,9 +4,10 @@ import {fetchOnProgress} from "./utils.js"
 
 export class VologramBodyReader {
 
-    constructor(url, version, onProgress = () => {}) {
+    constructor(url, header, onProgress = () => {}) {
+        this.header = header
+
         this._url = url
-        this._version = version
 
         this.frameNumber = -1
         this.lastKeyFrameNumber = undefined //lastKeyFrameLoaded
@@ -25,6 +26,7 @@ export class VologramBodyReader {
         this.uvsData = null
         this.textureData = null
 
+        // ptr to frame start and frameData (vertices)
         this.framesDirectory = {}
 
         this.onProgress = onProgress
@@ -36,121 +38,139 @@ export class VologramBodyReader {
 
     async fetch() {
         let response = await fetchOnProgress(this._url, this.onProgress)
-        return new BinaryReader(response.response)
+        this.reader = new BinaryReader(response.response)
+
+        this.createFrameDictionary()
     }
 
-    customReadNext(reader, hasNormals, textured, readFrameData = true) {
-        const frameCur = reader.cur
-        this.frameNumber = reader.readInt32()
-        this.meshDataSize = reader.readInt32()
-        this.keyFrame = reader.readByte()
+    createFrameDictionary() {
+        let keyFrameNumber = null
+        for (let i = 0; i < this.header.frameCount; i++) {
+
+            let cur = this.reader.cur
+            this.readNextFrame(false)
+
+            if (this.isKeyFrame()) {
+                keyFrameNumber = this.frameNumber
+            }
+
+            this.framesDirectory[this.frameNumber] = {
+                cur,
+                frameNumber: this.frameNumber,
+                meshDataSize: this.meshDataSize,
+                keyFrame: this.keyFrame,
+                keyFrameNumber
+            }
+
+        }
+        console.log(this.framesDirectory)
+    }
+
+    /**
+     * Read whatever frame and takes care that previous keyframe was loaded
+     * @param frameNum
+     */
+    readSeekFrame(frameNum) {
+        const frameDirectory = this.framesDirectory[frameNum]
+
+        // if keyframe not loaded
+        if(frameDirectory.keyFrame === 0 && frameDirectory.keyFrameNumber !== this.lastKeyFrameNumber) {
+            //prev version, was more optimized because was loading only this.readFrameData() not unnecessary data such as vertices, but cleaner code now. And normally skipped frame should not happen often
+            this.reader.cur = frameDirectory.cur
+            const keyframeDirectory = this.framesDirectory[frameDirectory.keyFrameNumber]
+            this.reader.cur = keyframeDirectory.cur
+            this.readNextFrame(true)
+        }
+
+        this.reader.cur = frameDirectory.cur
+        this.readNextFrame(true)
+    }
+
+    /**
+     * Read the next frame, next according to reader.cur (ptr)
+     * @param readFrameData read the frame data or skip them (useful to optimize the creation of the dictionary)
+     */
+
+    readNextFrame(readFrameData = true) {
+        this.frameNumber = this.reader.readInt32()
+        this.meshDataSize = this.reader.readInt32()
+        this.keyFrame = this.reader.readByte()
         this.frameHeaderCheck()
 
         if(readFrameData) {
-            this.readKeyFrameDataIfSkipped(reader, hasNormals, textured)
-            this.readFrameData(reader, hasNormals, textured)
+            this.readFrameData()
         } else {
-            this.handleFramesDirectory(frameCur, reader.cur)
-            this.skipFrameData(reader)
+            this.skipFrameData()
         }
     }
 
-    readKeyFrameDataIfSkipped(reader, hasNormals, textured) { //this is really dirty, need to rework that
-        const frameDirectory = this.framesDirectory[this.frameNumber]
-        if(!this.isKeyFrame() && this.lastKeyFrameNumber !== frameDirectory.lastKeyFrameNumber) {
-            const keyframeDirectory = this.framesDirectory[frameDirectory.lastKeyFrameNumber]
-            const cur = reader.cur
-            reader.cur = keyframeDirectory.frameDataCur
-            this.keyFrame = keyframeDirectory.keyFrame
-            this.readFrameData(reader, hasNormals, textured)
-            this.keyFrame = 0
-            this.lastKeyFrameNumber = keyframeDirectory.frameNumber
-            reader.cur = cur
-        }
-    }
-
-    skipFrameData(reader) {
-        reader.cur += this.meshDataSize + 4 //where is the missing float32?!?
-    }
-
-    handleFramesDirectory(cur, frameDataCur) {
-        if (this.isKeyFrame()) {
-            this.lastKeyFrameNumber = this.frameNumber
-        }
-
-        this.framesDirectory[this.frameNumber] = {
-            cur,
-            frameDataCur,
-            frameNumber: this.frameNumber,
-            meshDataSize: this.meshDataSize,
-            keyFrame: this.keyFrame,
-            lastKeyFrameNumber: this.lastKeyFrameNumber
-        }
+    skipFrameData() {
+        this.reader.cur += this.meshDataSize + 4 //where is the missing float32?!?
     }
 
     ////VologramFrame.cs:ParseBody
 
-    readFrameData(reader, hasNormals, textured) {
-        this.readVerticesData(reader)
+    readFrameData() {
+        this.readVerticesData()
 
-        if (hasNormals)
-            this.readNormalsData(reader)
+        if (this.header.hasNormal())
+            this.readNormalsData()
 
         // New UVs from that frame
         if (this.isKeyFrame()) {
             this.lastKeyFrameNumber = this.frameNumber
-            this.readIndicesData(reader)
-            this.readUvsData(reader)
+            this.readIndicesData()
+            this.readUvsData()
         }
 
-        if (textured)
-            this.readTextureData(reader)
+        if (this.header.isTextured())
+            this.readTextureData()
 
-        this._frameMeshDataSize = reader.readInt32()
-        // this.frameDataSizeCheck()
+        this._frameMeshDataSize = this.reader.readInt32()
+        this.frameDataSizeCheck()
     }
 
-    readVerticesData(reader) {
-        this._verticesSize = reader.readInt32()
-        this.verticesData = reader.readArray(this._verticesSize, TypedArrays.float32) // read Vector3 - 3 float - 3x4=12 byte each Vector3
+    readVerticesData() {
+        this._verticesSize = this.reader.readInt32()
+        this.verticesData = this.reader.readArray(this._verticesSize, TypedArrays.float32) // read Vector3 - 3 float - 3x4=12 byte each Vector3
     }
 
-    readNormalsData(reader) {
-        this._normalSize = reader.readInt32()
+    readNormalsData() {
+        this._normalSize = this.reader.readInt32()
         if (this._normalSize <= 0) throw new Error(`Invalid normals length value (${this._normalSize})`)
         if (this._normalSize !== this._verticesSize) throw new Error(`The number of normals (size:${this._normalSize}) does not match the number of vertices (size:${this._verticesSize}`)
-        this.normalsData = reader.readArray(this._normalSize, TypedArrays.float32) // nb items : {x,y,z} * (this._normalSize / 12)
+        this.normalsData = this.reader.readArray(this._normalSize, TypedArrays.float32) // nb items : {x,y,z} * (this._normalSize / 12)
     }
 
-    readIndicesData(reader) {
-        this._indicesSize = reader.readInt32()
+    readIndicesData() {
+        this._indicesSize = this.reader.readInt32()
         if (this._indicesSize <= 0) throw new Error(`Invalid indices length value (${this._indicesSize})`)
         this.indicesData = null
 
         let verticesCount = this._verticesSize / 4
         if (verticesCount / 3 < 65535) {
             this.usingShortIndices = true
-            this.indicesData = reader.readArray(this._indicesSize, TypedArrays.uint16) //2=SIZE_C_SHORT
+            this.indicesData = this.reader.readArray(this._indicesSize, TypedArrays.uint16) //2=SIZE_C_SHORT
         } else {
             this.usingShortIndices = false
-            this.indicesData = reader.readArray(this._indicesSize, TypedArrays.uint32) //4=SIZE_C_INT
+            this.indicesData = this.reader.readArray(this._indicesSize, TypedArrays.uint32) //4=SIZE_C_INT
         }
     }
 
-    readUvsData(reader) {
-        this._uvsSize = reader.readInt32() //size in bytes
+    readUvsData() {
+        this._uvsSize = this.reader.readInt32() //size in bytes
         if (this._uvsSize <= 0) throw new Error("Invalid uvs length value (" + this._uvsSize + ")")
         if (this._uvsSize / 2 !== this._verticesSize / 3) throw new Error(`The number of UVs does not match the number of vertices: ${this._uvsSize}(_uvsSize)/2 !== ${this._verticesSize}(_verticesSize)/3`)
 
-        this.uvsData = reader.readArray(this._uvsSize, TypedArrays.float32)
+        this.uvsData = this.reader.readArray(this._uvsSize, TypedArrays.float32)
     }
 
-    readTextureData(reader) { //TODO try it, current vols file; do not contains texture
-        this._textureSize = reader.readInt32()
+    readTextureData() { //TODO try it, current vols file; do not contains texture
+        this._textureSize = this.reader.readInt32()
         this.textureData = []
 
         if (this._textureSize <= 0) throw new Error(`Invalid texture size value (${this._textureSize})`)
-        this.textureData = reader.readArray(this._textureSize, TypedArrays.uint8)
+        this.textureData = this.reader.readArray(this._textureSize, TypedArrays.uint8)
     }
 
     frameHeaderCheck() {
