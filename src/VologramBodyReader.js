@@ -68,7 +68,6 @@ export class VologramBodyReader {
                 keyFrame: this.keyFrame,
                 keyFrameNumber
             }
-
         }
     }
 
@@ -78,6 +77,11 @@ export class VologramBodyReader {
      */
     readSeekFrame(frameNum) {
         const frameDirectory = this.framesDirectory[frameNum]
+
+        if(!frameDirectory) {
+            console.error(`frame ${frameNum} not found in `, this.framesDirectory, '. Will skip that frame. Check the configured fps, if video has same number of frames than sequences file, etc')
+            return
+        }
 
         // if keyframe not loaded
         if(frameDirectory.keyFrame === 0 && frameDirectory.keyFrameNumber !== this.lastKeyFrameNumber) {
