@@ -11,6 +11,7 @@ Try it :
 
 [npm package](https://www.npmjs.com/package/volograms-js)
 
+
 ## Install from npm
 
 `npm i volograms-js`
@@ -61,8 +62,16 @@ Need to try https://bundle.run/ or https://wzrd.in/ or https://unpkg.com/
 
 ## Options
 
-- `texture` : The video texture is expected to be named `texture_1024_h264.mp4`, otherwise if it is named for example `texture_2048_h264.mp4` do `new Vologram(url, () => {}, {texture: 'texture_2048_h264.mp4'})`
-- `autoplay` : By default, this is true, but if you don't want to play when loaded: `new Vologram(url, () => {}, {autoplay: false})` 
+Options can be provided in constructor, eg `new Vologram(url, () => {}, {texture: 'texture_2048_h264.mp4'})`
+
+| Key        | Comment                                                               | Default value           |
+|------------|:----------------------------------------------------------------------|:------------------------|
+| `texture`  | Video texture filename                                                | `texture_1024_h264.mp4` |
+| `header`   | Header filename                                                       | `header.vols`           |
+| `sequence` | Sequence filename                                                     | `sequence_0.vols`       |
+| `autoplay` | Autoplay when loaded. Could not work anymore because of Chrome policy | `false`                 |
+| `fps`      | Frames per seconds                                                    | `30`                    |
+
 
 ## Sound & Play/Pause
 
@@ -71,6 +80,14 @@ This lib uses and exposes the standard [`HTMLVideoElement`](https://developer.mo
 - [play](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/play): `vologram.elVideo.play()`
 - [unmute](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/muted): `vologram.elVideo.muted = false`. Remember that usually playing and unmuted video, needs an user interaction (to avoid annoying him with unwanted sound / advertising)
 - [seek](https://developer.mozilla.org/en-US/docs/Web/API/HTMLMediaElement/currentTime): `vologram.elVideo.currentTime = 1.5`. In seconds
+
+### Difference with official plugin
+
+Volograms released recently their npm plugin [@volograms/web_vol_lib](https://www.npmjs.com/package/@volograms/web_vol_lib)
+
+Differences : 
+- their uses `wasm`, but mine don't, however both should have same performance
+- mine can be used in one line using the constructor `new Vologram()`
 
 ### Troubleshooting
 
