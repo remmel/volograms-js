@@ -34,16 +34,11 @@ export class Vologram extends THREE.Group {
         if(this.options.autoplay)
             this.elVideo.play()
 
-        this.material = this.options.debugNormal
-            ? new THREE.MeshNormalMaterial({
-                side: THREE.DoubleSide,
-                flatShading: true
-            })
-            : new THREE.MeshPhongMaterial({
-                side: THREE.DoubleSide,
-                flatShading: true,
-                map: texture,
-            })
+        this.material = new THREE.MeshPhongMaterial({
+            side: THREE.DoubleSide,
+            flatShading: true,
+            map: texture,
+        })
 
         this.bodyReader = await this.fetch(folder)
 
@@ -108,7 +103,6 @@ export class Vologram extends THREE.Group {
     createGeometry(body) {
         let geometry = new THREE.BufferGeometry()
         geometry.setIndex(new THREE.BufferAttribute(body.indicesData, 1))
-        console.log(body, body.verticesData.length)
         geometry.setAttribute('position', new THREE.BufferAttribute(body.verticesData, 3))
         geometry.setAttribute('normal', new THREE.BufferAttribute(body.normalsData, 3))
         geometry.setAttribute('uv', new THREE.BufferAttribute(body.uvsData, 2))
