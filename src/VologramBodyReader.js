@@ -1,7 +1,14 @@
-import * as THREE from "three";
-import { BinaryReader, TypedArrays } from "./BinaryReader.js"
-import {fetchOnProgress} from "./utils.js"
+import { BinaryReader, TypedArrays } from './BinaryReader.js'
+import {fetchOnProgress} from './utils.js'
 
+/**
+ * Class loading and reading a volograms body containing frames/sequence (usually sequence_0.vols)
+ * This version first load and read the whole file skipping the frame data and build a frame directory
+ * containing pointers allowing to access directly a specific frame in memory
+ * Then it will load (copy or if possible only point) the geometry for a given frame number.
+ * It handles skipped keyframe.
+ * Previous version was creating all geometries, which could have caused memory issue when the volograms is big
+ */
 export class VologramBodyReader {
 
     constructor(url, header, onProgress = () => {}) {

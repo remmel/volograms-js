@@ -3,7 +3,15 @@ import {createElement} from './utils.js'
 import {VologramHeaderReader} from './VologramHeaderReader.js'
 import {VologramBodyReader} from './VologramBodyReader.js'
 
-//VologramFrame.cs AND VologramAssetLoader.cs
+/**
+ * Class loading a vologram in a THREE js project.
+ * It will load the video texture and load/read the frames geometries bin
+ * Basic usage is :
+ * ```
+ * let vologram = new Vologram(url)
+ * scene.add(vologram)
+ * ```
+ */
 export class Vologram extends THREE.Group {
 
     constructor(folder, onProgress = () => {}, options = {}) {
@@ -13,11 +21,11 @@ export class Vologram extends THREE.Group {
             texture: 'texture_1024_h264.mp4',
             header: 'header.vols',
             sequence: 'sequence_0.vols',
+            fps: 30,
             ...options
         }
 
         this.elVideo = createElement(`<video width='400' height='80' muted controls loop playsinline preload='auto' crossorigin='anonymous'>`)
-        this.fps = 30
 
         // elVideo.ontimeupdate is not triggered often enough
         this.elVideo.requestVideoFrameCallback(this.onVideoFrameCallback.bind(this))
@@ -92,7 +100,7 @@ export class Vologram extends THREE.Group {
      * @returns {number}
      */
     getFrameIdx(time) { //eg [0.667-0.700[=20
-        return Math.floor(time * this.fps + 0.0001) //30fps
+        return Math.floor(time * this.options.fps + 0.0001) //30fps
     }
 
     /**

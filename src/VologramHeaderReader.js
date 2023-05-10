@@ -1,6 +1,8 @@
-import {BinaryReader} from "./BinaryReader.js"
+import {BinaryReader} from './BinaryReader.js'
 
-// VologramHeaderReader.cs
+/**
+ * Class loading and reading a volograms header (usually header.vols)
+ */
 export class VologramHeaderReader {
 
     async init(url) { //asynced constructor
