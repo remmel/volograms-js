@@ -86,13 +86,12 @@ export class VologramBodyReader {
         // if keyframe not loaded
         if(frameDirectory.keyFrame === 0 && frameDirectory.keyFrameNumber !== this.lastKeyFrameNumber) {
             //prev version, was more optimized because was loading only this.readFrameData() not unnecessary data such as vertices, but cleaner code now. And normally skipped frame should not happen often
-            this.reader.cur = frameDirectory.cur
             const keyframeDirectory = this.framesDirectory[frameDirectory.keyFrameNumber]
-            this.reader.cur = keyframeDirectory.cur
+            this.reader.cur = keyframeDirectory.cur //put pointer to the closest previous keyframe
             this.readNextFrame(true)
         }
 
-        this.reader.cur = frameDirectory.cur
+        this.reader.cur = frameDirectory.cur //put pointer to frameNum frame
         this.readNextFrame(true)
     }
 
