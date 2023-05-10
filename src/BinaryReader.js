@@ -62,14 +62,14 @@ export class BinaryReader {
 
 
     /**
-     * @param length in bytes (1 float32 is 4 bytes === 32 bits)
+     * @param bytes bytes to read (eg 1 float32 is 4 bytes === 32 bits)
      // * @returns {Float32Array|}
      */
-    readArray(length, type = TypedArrays.uint8) {
+    readArray(bytes, type = TypedArrays.uint8) {
         const val = type.BYTES_PER_ELEMENT === 1 || this.cur % type.BYTES_PER_ELEMENT === 0
-            ? new type(this.arrayBuffer, this.cur, length / type.BYTES_PER_ELEMENT) // probably more efficient but can only be used if multiple of type.BYTES_PER_ELEMENT : `Uncaught RangeError: start offset of Float32Array should be a multiple of 4`
-            : new type(this.arrayBuffer.slice(this.cur, this.cur + length))
-        this.cur += length
+            ? new type(this.arrayBuffer, this.cur, bytes / type.BYTES_PER_ELEMENT) // probably more efficient but can only be used if multiple of type.BYTES_PER_ELEMENT : `Uncaught RangeError: start offset of Float32Array should be a multiple of 4`
+            : new type(this.arrayBuffer.slice(this.cur, this.cur + bytes))
+        this.cur += bytes
         return val
     }
 
