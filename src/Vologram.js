@@ -1,19 +1,31 @@
 import * as THREE from 'three'
-import {createElement} from "./utils.js";
-import {VologramHeaderReader} from "./VologramHeaderReader.js";
-import {VologramBodyReader} from "./VologramBodyReader.js";
+import {createElement} from './utils.js'
+import {VologramHeaderReader} from './VologramHeaderReader.js'
+import {VologramBodyReader} from './VologramBodyReader.js'
 
-//VologramFrame.cs AND VologramAssetLoader.cs
+/**
+ * Class loading a vologram in a THREE js project.
+ * It will load the video texture and load/read the frames geometries bin
+ * Basic usage is :
+ * ```
+ * let vologram = new Vologram(url)
+ * scene.add(vologram)
+ * ```
+ */
 export class Vologram extends THREE.Group {
 
     constructor(folder, onProgress = () => {}, options = {}) {
         super()
         this.onProgress = onProgress
-        this.options = {texture: 'texture_1024_h264.mp4', autoplay: true, ...options}
+        this.options = {
+            texture: 'texture_1024_h264.mp4',
+            header: 'header.vols',
+            sequence: 'sequence_0.vols',
+            fps: 30,
+            ...options
+        }
 
         this.elVideo = createElement(`<video width='400' height='80' muted controls loop playsinline preload='auto' crossorigin='anonymous'>`)
-        this.geometries = []
-        this.fps = 30
 
         // elVideo.ontimeupdate is not triggered often enough
         this.elVideo.requestVideoFrameCallback(this.onVideoFrameCallback.bind(this))
@@ -23,9 +35,7 @@ export class Vologram extends THREE.Group {
     }
 
     async init(folder) {
-        this.geometries = await this.fetchMeshes(folder)
         this.elVideo.src = folder + '/' + this.options.texture
-        // this.elVideo.playbackRate = 0.1
         var texture = this.texture = new THREE.VideoTexture(this.elVideo)
         texture.minFilter = THREE.NearestFilter
 
@@ -38,25 +48,25 @@ export class Vologram extends THREE.Group {
             map: texture,
         })
 
-        //init mesh with 1st geometry
-        this.mesh = new THREE.Mesh(this.geometries[0], this.material)
+        this.bodyReader = await this.fetch(folder)
+
+        const geo = this.readFrameGeo(0)
+
+        this.mesh = new THREE.Mesh(geo, this.material)
 
         this.add(this.mesh)
     }
 
-    async fetchMeshes(folder) {
-        let geometries = []
-        let header = await new VologramHeaderReader().init(folder + '/header.vols')
-        //TODO must handle multiple files not only number 0
-        //Load all the geometry in memory. Dirty but OK, as Volograms currently last 5sec max
-        let body = new VologramBodyReader(folder + '/sequence_0.vols', header.version, this.onProgress)
-        let reader = await body.fetch()
-        for (let i = 0; i < header.frameCount; i++) {
-            body.customReadNext(reader, header.hasNormal(), header.isTextured())
-            let geo = this.createGeometry(body)
-            geometries.push(geo)
-        }
-        return geometries
+    async fetch(folder) {
+        let header = await new VologramHeaderReader().init(folder + '/' + this.options.header)
+        let body = new VologramBodyReader(folder + '/' + this.options.sequence, header, this.onProgress)
+        await body.fetch()
+        return body
+    }
+
+    readFrameGeo(frameNum) {
+        this.bodyReader.readSeekFrame(frameNum)
+        return this.createGeometry(this.bodyReader)
     }
 
     /**
@@ -69,11 +79,10 @@ export class Vologram extends THREE.Group {
     onVideoFrameCallback(now, metadata) {
         var frameIdx = this.getFrameIdx(metadata.mediaTime)
 
-        if (this.prevFrameIdx !== frameIdx) {
-            if (frameIdx >= this.geometries.length) return console.error("out frame:" + frameIdx + " time: " + this.elVideo.currentTime)
-            this.mesh.geometry = this.geometries[frameIdx]
-            // if(this.prevFrameIdx !== undefined)
-            //     this.geometries[this.prevFrameIdx].dispose()
+        if (this.prevFrameIdx !== frameIdx && this.bodyReader) {
+            const geo = this.readFrameGeo(frameIdx)
+            this.mesh.geometry.dispose()
+            this.mesh.geometry = geo
             this.prevFrameIdx = frameIdx
         }
 
@@ -91,7 +100,7 @@ export class Vologram extends THREE.Group {
      * @returns {number}
      */
     getFrameIdx(time) { //eg [0.667-0.700[=20
-        return Math.floor(time * this.fps + 0.0001) //30fps
+        return Math.floor(time * this.options.fps + 0.0001) //30fps
     }
 
     /**
@@ -100,18 +109,12 @@ export class Vologram extends THREE.Group {
      * @returns {THREE.BufferGeometry}
      */
     createGeometry(body) {
-        let vertices = []
-        let uvs = []
-        // as this is done at init, we do not care to optimize it,
-        // but would be better to not copy the data, only using pointer
-        // we prefer here code readability over optimization
-        body.verticesData.forEach(xyz => vertices.push(xyz.x, xyz.y, xyz.z))
-        body.uvsData.forEach(xy => uvs.push(xy.x, xy.y))
-
         let geometry = new THREE.BufferGeometry()
-        geometry.setIndex(body.indicesData)
-        geometry.setAttribute('position', new THREE.Float32BufferAttribute(vertices, 3))
-        geometry.setAttribute('uv', new THREE.Float32BufferAttribute(uvs, 2))
+        geometry.setIndex(new THREE.BufferAttribute(body.indicesData, 1))
+        geometry.setAttribute('position', new THREE.BufferAttribute(body.verticesData, 3))
+        geometry.setAttribute('normal', new THREE.BufferAttribute(body.normalsData, 3))
+        geometry.setAttribute('uv', new THREE.BufferAttribute(body.uvsData, 2))
+
         return geometry
     }
 }

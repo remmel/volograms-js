@@ -24,10 +24,21 @@ scene.add(new THREE.GridHelper(10, 10))
 const updateLoading = p => {
     const el = document.getElementById('loading')
     el.innerText = Math.round(p*100) + '%'
+
+    if(p === 1.0) { //when loaded/100%
+        // Play and unmute when clicking on canvas (because of Chrome policy; cannot be autoplay)
+        renderer.domElement.onclick = e => {
+            vologram.elVideo.play()
+            vologram.elVideo.muted = false
+            renderer.domElement.onclick = null
+        }
+    }
 }
 
+// Play/Pause button and Sound/Mute button
 document.getElementById('playpause').onclick = e => vologram.elVideo.paused ? vologram.elVideo.play() : vologram.elVideo.pause()
 document.getElementById('sound').onclick = e => vologram.elVideo.muted = !vologram.elVideo.muted
+
 
 let url = 'https://www.metalograms.com/ftp/vv/volograms/1670754904327_ld'
 let vologram = new Vologram(url, updateLoading)
